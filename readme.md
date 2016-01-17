@@ -1,6 +1,6 @@
-# app
+# Electrolysis
 
-> My superb app
+> An [Electron](http://electron.atom.io/)-based Electron documentation viewer.
 
 
 ## Dev
