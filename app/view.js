@@ -1,52 +1,12 @@
 "use strict";
 
 var DocRenderer = require("../lib/doc_renderer.js");
+var S = require("string");
 
 class View {
   constructor(tab) {
-    var element = this.element = document.createElement("article");
-    var renderer = new DocRenderer(`${__dirname}/../docs/v0.36.3/README.md`);
-
-    element.innerHTML = renderer.html;
-
-    this.loading = false;
-
-    // var electron = require('electron');
-
-    // element.addEventListener('did-finish-load', function(e) {
-    //   Chrome.updateStatus(element.getURL() + " loaded.");
-    // });
-
-    // element.addEventListener('load-commit', function(e) {
-    //   if(!e.url.match(Chrome.root)) {
-    //     element.stop();
-    //     electron.shell.openExternal(e.url);
-    //   }
-    // });
-
-    // element.addEventListener('new-window', function(e) {
-    //   if(!e.url.match(Chrome.root)) {
-    //     electron.shell.openExternal(e.url);
-    //   } else {
-    //     var tab = Chrome.newTab(e.url);
-    //     Chrome.activateTab(tab);
-    //   }
-    // });
-
-    // element.addEventListener('did-start-loading', function(e) {
-    //   this.loading = true;
-    //   Chrome.startLoading();
-    // });
-
-    // element.addEventListener('did-stop-loading', function(e) {
-    //   this.loading = false;
-    //   Chrome.stopLoading();
-    // });
-
-    // element.addEventListener('page-title-updated', function(e) {
-    //   tab.setText(e.title);
-    // });
-
+    this.tab = tab;
+    this.element = document.createElement("article");
     this.hide();
   }
 
@@ -59,8 +19,27 @@ class View {
   }
 
   go(url) {
-    // Chrome.startLoading();
-    // this.element.src = url;
+    var renderer = new DocRenderer(url);
+    this.element.innerHTML = renderer.html;
+    this.tab.setText(renderer.title);
+
+    var tab = this.tab;
+    var links = Array.from(this.element.querySelectorAll("a"));
+    links.forEach(function(link) {
+      if(S(link.href).match(Chrome.root)) {
+        link.href = link.href.replace(Chrome.root, Chrome.docRoot);
+      }
+      link.addEventListener('mouseenter', function(e) {
+        Chrome.updateStatus(e.target.href);
+      });
+      link.addEventListener('mouseleave', function(e) {
+        Chrome.clearStatus();
+      });
+      link.addEventListener('click', function(e) {
+        Chrome.navigate(e.target.href, tab);
+        e.preventDefault();
+      });
+    });
   }
 }
 

@@ -9,7 +9,7 @@
 			var Chrome = require("./app/chrome.js");
 			document.addEventListener("DOMContentLoaded", function() {
 				Chrome.init();
-				var tab = Chrome.newTab();
+				var tab = Chrome.newTab(Chrome.docRoot + "/README.md");
 				tab.view.show();
 			});
 		</script>

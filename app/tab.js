@@ -4,12 +4,16 @@ var View = require("./view.js");
 
 class Tab {
   constructor() {
-    this.view = new View(this);
     var element = this.element = document.createElement("tab");
+    this.view = new View(this);
 
     element.addEventListener('click', function(e) {
       Chrome.activateTab(this);
     }.bind(this));
+  }
+
+  go(url) {
+    this.view.go(url);
   }
 
   setText(title) {

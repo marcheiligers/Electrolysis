@@ -1,9 +1,13 @@
 "use strict";
 
 var Tab = require("./tab.js");
+var path = require("path");
+var S = require("string");
+var electron = require('electron');
 
 var Chrome = {
-  root: "http://electron.atom.io/docs/",
+  root: path.resolve("."),
+  docRoot: path.resolve("./docs/v0.36.3/docs"),
   tabs: [],
   init: function() {
     this.nav = document.querySelector("nav");
@@ -19,7 +23,7 @@ var Chrome = {
 
     this.tabs.push(tab);
 
-    tab.view.go(url || this.root);
+    tab.view.go(url);
     tab.activate();
 
     return tab;
@@ -32,6 +36,18 @@ var Chrome = {
       }
     });
     tab.activate();
+  },
+
+  navigate: function(url, tab) {
+    console.log(`Navigating to ${url}, root is ${this.root}`)
+    var destination = url.replace(/^file:\/\//, "");
+    if(S(destination).startsWith(this.docRoot)) {
+      console.log(`Internal to ${destination}`)
+      tab.go(destination);
+    } else {
+      console.log(`External to ${url}`)
+      electron.shell.openExternal(url);
+    }
   },
 
   startLoading: function() {
@@ -49,6 +65,10 @@ var Chrome = {
 
   updateStatus: function(message) {
     this.footer.innerHTML = message;
+  },
+
+  clearStatus: function() {
+    this.footer.innerHTML = "";
   }
 };
 
