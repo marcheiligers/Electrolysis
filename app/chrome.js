@@ -1,6 +1,6 @@
 "use strict";
 
-var Tab = require("./tab.js");
+var View = require("./view.js");
 var path = require("path");
 var S = require("string");
 var electron = require('electron');
@@ -8,7 +8,7 @@ var electron = require('electron');
 var Chrome = {
   root: path.resolve("."),
   docRoot: path.resolve("./docs/v0.36.3/docs"),
-  tabs: [],
+  views: [],
   init: function() {
     this.nav = document.querySelector("nav");
     this.main = document.querySelector("main");
@@ -16,50 +16,36 @@ var Chrome = {
     this.footer = document.querySelector("footer");
   },
 
-  newTab: function(url) {
-    var tab = new Tab();
-    this.nav.appendChild(tab.element);
-    this.main.appendChild(tab.view.element);
+  newView: function(url) {
+    let view = new View(this);
+    this.views.push(view);
 
-    this.tabs.push(tab);
+    view.go(url);
+    view.activate();
 
-    tab.view.go(url);
-    tab.activate();
-
-    return tab;
+    return view;
   },
 
-  activateTab: function(tab) {
-    this.tabs.forEach(function(atab) {
-      if(atab != tab) {
-        atab.deactivate();
+  activateView: function(view) {
+    this.views.forEach(function(aview) {
+      if(aview != view) {
+        aview.deactivate();
       }
     });
-    tab.activate();
+    view.activate();
   },
 
-  navigate: function(url, tab) {
-    console.log(`Navigating to ${url}, root is ${this.root}`)
+  navigate: function(url, view, e) {
     var destination = url.replace(/^file:\/\//, "");
     if(S(destination).startsWith(this.docRoot)) {
-      console.log(`Internal to ${destination}`)
-      tab.go(destination);
+      if(e.altKey || e.metaKey) {
+        view.deactivate();
+        this.newView(destination);
+      } else {
+        view.go(destination);
+      }
     } else {
-      console.log(`External to ${url}`)
       electron.shell.openExternal(url);
-    }
-  },
-
-  startLoading: function() {
-    this.loader.style.display = "inline-block";
-  },
-
-  stopLoading: function() {
-    var loadingTabs = this.tabs.some(function(atab) {
-      return atab.loading;
-    });
-    if(loadingTabs == 0) {
-      this.loader.style.display = "none";
     }
   },
 

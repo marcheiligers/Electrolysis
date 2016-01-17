@@ -9,8 +9,9 @@
 			var Chrome = require("./app/chrome.js");
 			document.addEventListener("DOMContentLoaded", function() {
 				Chrome.init();
-				var tab = Chrome.newTab(Chrome.docRoot + "/README.md");
-				tab.view.show();
+				Chrome.updateStatus("Loading readme...");
+				Chrome.newView(Chrome.docRoot + "/README.md");
+				// Chrome.updateStatus("Ready.");
 			});
 		</script>
 	</head>
@@ -44,7 +45,7 @@
 		<main>
 		</main>
 		<footer>
-			<span id="status-panel">...</span>
+			<span id="status-panel">Loading...</span>
 		</footer>
 	</body>
 </html>

@@ -1,19 +1,13 @@
 "use strict";
 
-var View = require("./view.js");
-
 class Tab {
-  constructor() {
+  constructor(view) {
     var element = this.element = document.createElement("tab");
-    this.view = new View(this);
+    this.view = view;
 
     element.addEventListener('click', function(e) {
-      Chrome.activateTab(this);
-    }.bind(this));
-  }
-
-  go(url) {
-    this.view.go(url);
+      Chrome.activateView(view);
+    });
   }
 
   setText(title) {
@@ -21,12 +15,10 @@ class Tab {
   }
 
   activate() {
-    this.view.show();
     this.element.className = "active";
   }
 
   deactivate() {
-    this.view.hide();
     this.element.className = "";
   }
 }

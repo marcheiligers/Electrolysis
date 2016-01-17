@@ -1,45 +1,34 @@
 "use strict";
 
-var DocRenderer = require("../lib/doc_renderer.js");
-var S = require("string");
+var Tab = require("./tab.js");
+var Pane = require("./pane.js");
 
 class View {
-  constructor(tab) {
-    this.tab = tab;
-    this.element = document.createElement("article");
-    this.hide();
+  constructor(chrome) {
+    let tab = this.tab = new Tab(this);
+    let pane = this.pane = new Pane(this);
+
+    chrome.nav.appendChild(tab.element);
+    chrome.main.appendChild(pane.element);
   }
 
-  show() {
-    this.element.style.display = "block";
+  setTitle(text) {
+    this.tab.setText(text);
   }
 
-  hide() {
-    this.element.style.display = "none";
+  activate() {
+    this.tab.activate();
+    this.pane.show();
+  }
+
+  deactivate() {
+    this.tab.deactivate();
+    this.pane.hide();
   }
 
   go(url) {
-    var renderer = new DocRenderer(url);
-    this.element.innerHTML = renderer.html;
-    this.tab.setText(renderer.title);
-
-    var tab = this.tab;
-    var links = Array.from(this.element.querySelectorAll("a"));
-    links.forEach(function(link) {
-      if(S(link.href).match(Chrome.root)) {
-        link.href = link.href.replace(Chrome.root, Chrome.docRoot);
-      }
-      link.addEventListener('mouseenter', function(e) {
-        Chrome.updateStatus(e.target.href);
-      });
-      link.addEventListener('mouseleave', function(e) {
-        Chrome.clearStatus();
-      });
-      link.addEventListener('click', function(e) {
-        Chrome.navigate(e.target.href, tab);
-        e.preventDefault();
-      });
-    });
+    // TODO: keep history
+    this.pane.go(url);
   }
 }
 

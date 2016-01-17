@@ -1,6 +1,7 @@
 'use strict';
 const electron = require('electron');
 const app = electron.app;
+const Settings = require('./app/settings')
 
 // report crashes to the Electron project
 require('crash-reporter').start();
@@ -43,5 +44,7 @@ app.on('activate', () => {
 
 app.on('ready', () => {
 	mainWindow = createMainWindow();
-	mainWindow.openDevTools();
+	if(Settings.developmentMode && Settings.showDevToolsOnStart) {
+		mainWindow.openDevTools();
+	}
 });
