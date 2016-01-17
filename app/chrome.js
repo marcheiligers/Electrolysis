@@ -14,6 +14,9 @@ var Chrome = {
     this.main = document.querySelector("main");
     this.loader = document.querySelector("nav loader");
     this.footer = document.querySelector("footer");
+
+    this.nav.querySelector("#back-button").addEventListener("click", this.back.bind(this));
+    this.nav.querySelector("#forward-button").addEventListener("click", this.forward.bind(this));
   },
 
   newView: function(url) {
@@ -47,6 +50,20 @@ var Chrome = {
     } else {
       electron.shell.openExternal(url);
     }
+  },
+
+  back: function() {
+    this.currentView().back();
+  },
+
+  forward: function() {
+    this.currentView().forward();
+  },
+
+  currentView: function() {
+    return this.views.find(function(view) {
+      return view.isActive();
+    })
   },
 
   updateStatus: function(message) {
