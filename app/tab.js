@@ -5,7 +5,7 @@ class Tab {
     var element = this.element = document.createElement("tab");
     this.view = view;
 
-    element.addEventListener('click', function(e) {
+    element.addEventListener("click", function(e) {
       Chrome.activateView(view);
     });
   }

@@ -1,7 +1,8 @@
 "use strict";
 
-var Tab = require("./tab.js");
-var Pane = require("./pane.js");
+var Tab = require("./tab");
+var Pane = require("./pane");
+var History = require("../lib/history");
 
 class View {
   constructor(chrome) {
@@ -11,8 +12,7 @@ class View {
     chrome.nav.appendChild(tab.element);
     chrome.main.appendChild(pane.element);
 
-    this.history = [];
-    this.historyIndex = -1; // TODO: Extract history into it's own class
+    this.history = new History;
   }
 
   setTitle(text) {
@@ -34,29 +34,16 @@ class View {
   }
 
   go(url) {
-    this.history = this.history.slice(0, this.historyIndex + 1);
     this.history.push(url);
-    this.historyIndex = this.history.length - 1;
-    console.log(this.history, this.historyIndex);
     this.pane.go(url);
   }
 
   back() {
-    this.historyIndex--;
-    if(this.historyIndex < 0) {
-      this.historyIndex = 0;
-    }
-    console.log(this.history, this.historyIndex);
-    this.pane.go(this.history[this.historyIndex]);
+    this.pane.go(this.history.back());
   }
 
   forward() {
-    this.historyIndex++;
-    if(this.historyIndex > this.history.length - 1) {
-      this.historyIndex = this.history.length - 1;
-    }
-    console.log(this.history, this.historyIndex);
-    this.pane.go(this.history[this.historyIndex]);
+    this.pane.go(this.history.forward());
   }
 }
 

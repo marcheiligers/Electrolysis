@@ -3,7 +3,7 @@
 var View = require("./view.js");
 var path = require("path");
 var S = require("string");
-var electron = require('electron');
+var electron = require("electron");
 
 var Chrome = {
   root: path.resolve("."),

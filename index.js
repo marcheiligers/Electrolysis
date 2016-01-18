@@ -1,13 +1,13 @@
-'use strict';
-const electron = require('electron');
+"use strict";
+const electron = require("electron");
 const app = electron.app;
-const Settings = require('./app/settings')
+const Settings = require("./app/settings")
 
 // report crashes to the Electron project
-require('crash-reporter').start();
+require("crash-reporter").start();
 
 // adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')();
+require("electron-debug")();
 
 // prevent window being garbage collected
 let mainWindow;
@@ -25,24 +25,24 @@ function createMainWindow() {
 	});
 
 	win.loadURL(`file://${__dirname}/index.html`);
-	win.on('closed', onClosed);
+	win.on("closed", onClosed);
 
 	return win;
 }
 
-app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+	if (process.platform !== "darwin") {
 		app.quit();
 	}
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
 	if (!mainWindow) {
 		mainWindow = createMainWindow();
 	}
 });
 
-app.on('ready', () => {
+app.on("ready", () => {
 	mainWindow = createMainWindow();
 	if(Settings.developmentMode && Settings.showDevToolsOnStart) {
 		mainWindow.openDevTools();
